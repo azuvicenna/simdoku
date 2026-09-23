@@ -21,13 +21,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $user = Profile::latest()->first() ?? (object)[
+        $user = null;
+
+        if (!app()->runningInConsole()) {
+            $user = Profile::latest()->first();
+        }
+
+        $defaultUser = (object)[
             'id' => 'nol',
             'nama' => 'Belum diatur',
             'nip' => 'Belum diatur',
             'tanda_tangan' => null
         ];
 
-        View::share('user', $user);
+        View::share('user', $user ?? $defaultUser);
     }
 }
